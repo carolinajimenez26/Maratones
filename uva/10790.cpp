@@ -1,5 +1,6 @@
+// 10790 - How Many Points of Intersection?
+// https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1731
 #include <bits/stdc++.h>
-//https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1731
 using namespace std;
 
 int main(){
