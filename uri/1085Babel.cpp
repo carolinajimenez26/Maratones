@@ -30,7 +30,7 @@ int Dijsktra(string source, string target, map<string, vector< pair< string, pai
       string nword = G[v][i].second.second;//palabra
       if(!visited[nv]){
         int new_w = w + nw;
-        if(new_w < dist[nv] && word[0] != nword[0]){
+        if(new_w <= dist[nv] && word[0] != nword[0]){
           dist[nv] = new_w;
           pq.push(make_pair(new_w,make_pair(nv,nword)));
         }
@@ -40,6 +40,15 @@ int Dijsktra(string source, string target, map<string, vector< pair< string, pai
   return -1;//si no hay camino
 }
 
+bool comp(const pair< string, pair <int, string>> &a,
+                                  const pair< string, pair <int, string>> &b) {
+
+    if (a.second.first == b.second.first) {
+      return a.second.second > b.second.second;
+    } else {
+      return a.second.first > b.second.first;
+    }
+}
 
 int main(void){
 
@@ -67,7 +76,7 @@ int main(void){
       G[D_aux].push_back(make_pair(O_aux,make_pair(word.length(),word)));
     }
 
-      int ans = Dijsktra(O,D,G,visited, dist);
+      int ans = Dijsktra(D,O,G,visited, dist);
       if(ans == -1) cout << "impossivel" << endl;
       else cout << ans << endl;
 
