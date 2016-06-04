@@ -20,6 +20,18 @@ void union_set(int x, int y){
   F[px] = py;
 }
 
+void union_enemy(int x, int y){
+  int px = find_set(x);
+  int py = find_set(y);
+  set<int> ex = E[px];
+  set<int> ey = E[py];
+  set<int>::iterator it;
+  for(it=E[px].begin(); it!=E[px].end(); ++it){
+    E[py].insert(*it);
+  }
+  E[px] = E[py];
+}
+
 void init(int N){
   set<int> emptyset;
   for(int i=0; i<N; i++){
@@ -39,6 +51,7 @@ void solver(int c, int x, int y){
         cout << "-1" << endl;
       }else{
         union_set(x, y);
+        union_enemy(x,y);
       }
     }
       break;
@@ -79,6 +92,7 @@ void solver(int c, int x, int y){
       }else{
         cout << "1" << endl;
         union_set(x, y);
+        union_enemy(x,y);
       }
     }
       break;
@@ -88,6 +102,8 @@ void solver(int c, int x, int y){
         cout << "1" << endl;
       }else{
         cout << "0" << endl;
+        union_set(x, y);
+        union_enemy(x,y);
       }
     }
       break;
