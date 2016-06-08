@@ -41,6 +41,9 @@ void init(int N){
 void solver(int c, int x, int y){
   int fx = find_set(x);
   int fy = find_set(y);
+  bool common_enemies = (E[fx]&E[fy]).any();
+  //cout<<"["<<c<<" "<<" "<<x<<" "<<y<<"]:";
+  //cout<<"A["<<F[fx]<<" "<<F[fy]<<"]A:";
   switch (c) {
     case 1:
     {
@@ -48,19 +51,22 @@ void solver(int c, int x, int y){
         if(E[fx].test(fy) || E[fy].test(fx)){
             cout << "-1" << endl;
           }else{
-            union_set(fx, fy);
             union_enemy(fx,fy);
+            union_set(fx, fy);
           }
       }
     }
       break;
     case 2:
     {
-      if(fx != fy){
+
+      if(fx != fy && !common_enemies){
         E[fx].set(fy);
         E[fy].set(fx);
-      }else{
-        cout<< "-1" << endl;
+      }else if(common_enemies || fx == fy ){
+          union_enemy(fx,fy);
+          union_set(fx,fy);
+          cout<< "-1" << endl;
       }
     }
       break;
@@ -72,8 +78,8 @@ void solver(int c, int x, int y){
       }
       if((E[fx]&E[fy]).any()){
         cout << "1" << endl;
-        union_set(fx, fy);
         union_enemy(fx,fy);
+        union_set(fx, fy);
       }else{
         cout << "0" << endl;
       }
@@ -85,16 +91,15 @@ void solver(int c, int x, int y){
         cout << "1" << endl;
       }else{
         cout << "0" << endl;
-        union_set(fx, fy);
-        union_enemy(fx,fy);
+        if(fx == fy){
+          union_enemy(fx,fy);
+        }
       }
     }
       break;
   }
+  //cout<<" [common_enemies:"<<common_enemies<<" fx:"<<F[fx]<<" fy:"<<F[fy]<<"]";
 }
-/* Verificar los papas siempre */
-
-
 
 int main(){
   ios_base::sync_with_stdio(false); cin.tie(NULL);
@@ -106,5 +111,9 @@ int main(){
       solver(c,x,y);
     }
   }
+  /*cout<<endl<<endl;
+  for (int i=0; i < 11; i++)
+    cout<<"F["<<i<<"]:"<<F[i]<<endl;
+    */
   return 0;
 }
