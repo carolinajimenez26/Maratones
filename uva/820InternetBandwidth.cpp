@@ -96,13 +96,20 @@ int main(void){
     init();
     for(int i = 0; i < c; i++){
       cin >> u >> v >> cost;
-      G[u].push_back(v);
-      G[v].push_back(u);
-      GW[u][v] = cost;
-      GW[v][u] = cost;
+      if(GW[u][v]!=-1 || GW[v][u]!=-1 ){
+        GW[u][v] += cost;
+        GW[v][u] += cost;
+      }else{
+        G[u].push_back(v);
+        G[v].push_back(u);
+        GW[u][v] = cost;
+        GW[v][u] = cost;
+      }
+
+
     }
     cout << "Network " << cases++ << endl;
-    cout << "The bandwidth is " << FF(s,t) << "." << endl;
+    cout << "The bandwidth is " << FF(s,t) << "." << endl<<endl;
   }
   return 0;
 }
