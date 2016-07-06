@@ -1,36 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define inf numeric_limits<int>::max()/2
+#define inf numeric_limits<long long>::max()/2
 #define MAX 2700
 #define endl '\n'
 
-unordered_map<string,int> CC;
-int GW[MAX][MAX];
-vector<int> G[MAX];
+unordered_map<string,long long> id;
+long long GW[MAX][MAX];
+vector<long long> G[MAX];
 bool visitados[MAX];
-int p[MAX];
-int fct[MAX];
-int smn[MAX];
-int s,r,f,t;
+long long p[MAX];
+bool fct[MAX];
+bool smn[MAX];
+bool tran[MAX];
+bool tranp[MAX];
+long long s,r,f,t;
 
 void init(){
-    int limit = s + 2*t + 1;
-    for(int i=0; i<= limit ;i++)
+    long long limit = s + 2*t + 1;
+    for(long long i=0; i<= limit ;i++)
         visitados[i] = false;
 }
 
-bool bfs(int source, int target){//says if there are a path form source to target
-  queue<int> st;
+bool bfs(long long source, long long target){//says if there are a path form source to target
+  stack<long long> st;
   visitados[source] = true;
   st.push(source);
   p[source] = -1;
   while(!st.empty()){
-    int v = st.front();
+    long long v = st.top();
     st.pop();
     if(v == target) return true; //there is a path
-    for(int i = 0; i < G[v].size(); i++){
-      int nv = G[v][i];
-      int nw = GW[v][nv];
+    for(long long i = 0; i < G[v].size(); i++){
+      long long nv = G[v][i];
+      long long nw = GW[v][nv];
       if(!visitados[nv] && nw > 0){
         visitados[nv] = true;
         st.push(nv);
@@ -41,13 +43,13 @@ bool bfs(int source, int target){//says if there are a path form source to targe
   return false;//there is no path
 }
 
-pair<int, vector<int> > minWeight(int target){
-  int p1 = p[target];
-  int w = inf;
-  vector<int> path;
+pair<long long, vector<long long> > minWeight(long long target){
+  long long p1 = p[target];
+  long long w = inf;
+  vector<long long> path;
   path.push_back(target);
   while(p1 != -1){
-    int nw = GW[p1][target];
+    long long nw = GW[p1][target];
     //cout << "p1 : " << p1 << " target : " << target << " nw : " << nw << endl;
     w = min(w,nw);
     path.push_back(p1);
@@ -57,19 +59,19 @@ pair<int, vector<int> > minWeight(int target){
   return make_pair(w,path);
 }
 
-int FF(int source, int target){//Ford-Fulkerson
-  int maxf = 0;
+long long FF(long long source, long long target){//Ford-Fulkerson
+  long long maxf = 0;
   while(bfs(source, target)){
     //cout<<"Encontre un camino"<<endl;
-    pair<int, vector<int> > mw = minWeight(target);//get the min weight and the path
-    //printgraph();
+    pair<long long, vector<long long> > mw = minWeight(target);//get the min weight and the path
+    //prlong longgraph();
     //cout<<"Camino: "<<"Size(): "<<mw.second.size()<<endl;
-    //printpath(mw.second);
+    //prlong longpath(mw.second);
     //cout<<"|"<<flag<<" min: "<<mw.first<<endl;
 
     maxf += mw.first;
     //cout << endl << mw.first << endl;
-    for(int i = 0; i < mw.second.size() - 1; i++){
+    for(long long i = 0; i < mw.second.size() - 1; i++){
       GW[mw.second[i]][mw.second[i+1]] += mw.first;
       GW[mw.second[i+1]][mw.second[i]] -= mw.first;
     }
@@ -86,73 +88,83 @@ string int2string(int x){
   return str;
 }
 
+
+int get_id(string &line) {
+  if (id.count(line))
+    return id[line];
+  int ans = id.size();
+  return id[line] = ans;
+}
+
 int main(){
   ios_base::sync_with_stdio(false); cin.tie(NULL);
   memset(GW,0,sizeof GW);
   memset(smn,0,sizeof smn);
   memset(fct,0,sizeof fct);
+  memset(tran,0,sizeof tran);
+  memset(tranp,0,sizeof tranp);
   int tt,cont=1, source, target;
   string  _c,_s,_f;
   cin>>s>>r>>f>>t;
-  source =0;
-  target = s + t*2 + 1 ;
+  source = s + t + t;
+  target = source + 1;
   //supliers
   for(int i=0; i<r;i++){
     cin>>_s;
-    if(!CC.count(_s)){
-        CC[_s] = cont++;
-    }
-    G[source].push_back(CC[_s]);
-    G[CC[_s]].push_back(source);
-    GW[source][CC[_s]] = 1;
-    GW[CC[_s]][source] = 1;
-    smn[CC[_s]] = 1;
+    G[source].push_back(get_id(_s));
+    G[get_id(_s)].push_back(source);
+    GW[source][get_id(_s)] = 1;
+    GW[get_id(_s)][source] = 0;
+    //smn[CC[_s]] = 1;
   }
   //factories
   for(int i=0; i<f;i++){
     cin>>_f;
-    if(!CC.count(_f)){
-        CC[_f] = cont++;
-    }
-    G[target].push_back(CC[_f]);
-    G[CC[_f]].push_back(target);
-    GW[target][CC[_f]] = 1;
-    GW[CC[_f]][target] = 1;
-    fct[CC[_f]] = 1;
+    G[target].push_back(get_id(_f));
+    G[get_id(_f)].push_back(target);
+    GW[target][get_id(_f)] = 0;
+    GW[get_id(_f)][target] = 1;
+    //fct[CC[_f]] = 1;
   }
-  string trp, trpp;
+  int trp, trpp;
   for(int i=0;i<t;i++){
     cin>>tt;
-    trp = "_f" + int2string(i);
-    trpp = trp + "'";
-    CC[trp]=cont++;
-    CC[trpp]=cont++;
-    G[CC[trp]].push_back(CC[trpp]);
-    G[CC[trpp]].push_back(CC[trp]);
-    GW[CC[trp]][CC[trpp]] = 1;
-    GW[CC[trpp]][CC[trp]] = 1;
+    trp = (i << 1) + s,
+    trpp = (i << 1 | 1) + s;
+    G[trp].push_back(trpp);
+    G[trpp].push_back(trp);
+    GW[trp][trpp] = 1;
+    GW[trpp][trp] = 0;
+    //tran[trp] = 1;
+    //tranp[trpp] = 1;
     for(int j=0;j<tt;j++){
       cin >> _c;
+      G[get_id(_c)].push_back(trp);
+      G[trp].push_back(get_id(_c));
+      GW[get_id(_c)][trp] = 1;
+      GW[trp][get_id(_c)] = 0;
+      G[trpp].push_back(get_id(_c));
+      G[get_id(_c)].push_back(trpp);
+      GW[get_id(_c)][trpp] = 0;
+      GW[trpp][get_id(_c)] = 1;
+      /*
       if(smn[CC[_c]]){
-        G[CC[_c]].push_back(CC[trp]);
-        G[CC[trp]].push_back(CC[_c]);
-        GW[CC[_c]][CC[trp]] = 1;
-        GW[CC[trp]][CC[_c]] = 1;
+        G[CC[_c]].push_back(trp);
+        G[trp].push_back(CC[_c]);
+        GW[CC[_c]][trp] = 1;
+        GW[trp][CC[_c]] = 0;
       }else if(fct[CC[_c]]){
-        G[CC[_c]].push_back(CC[trpp]);
-        G[CC[trpp]].push_back(CC[_c]);
-        GW[CC[_c]][CC[trpp]] = inf;
-        GW[CC[trpp]][CC[_c]] = inf;
+        G[CC[_c]].push_back(trpp);
+        G[trpp].push_back(CC[_c]);
+        GW[CC[_c]][trpp] = 0;
+        GW[trpp][CC[_c]] = 1;
       }else{
-        G[CC[_c]].push_back(CC[trp]);
-        G[CC[trp]].push_back(CC[_c]);
-        G[CC[_c]].push_back(CC[trpp]);
-        G[CC[trpp]].push_back(CC[_c]);
-        GW[CC[_c]][CC[trpp]] = 1;
-        GW[CC[trpp]][CC[_c]] = 1;
-        GW[CC[_c]][CC[trp]] = 1;
-        GW[CC[trp]][CC[_c]] = 1;
+        G[CC[_c]].push_back(trp);
+        G[trp].push_back(CC[_c]);
+        GW[CC[_c]][trp] = 1;
+        GW[trp][CC[_c]] = 0;
       }
+      */
     }
   }
 
