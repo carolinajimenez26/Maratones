@@ -34,17 +34,17 @@ ld solver(){
     d2 = diff(t2);
     //cout<<"d1: "<<d1<< "d2: " <<d2 << endl << " t1: " << t1 << " t2: " << t2 <<endl;
     //cout << "step : " << step << endl;
-    mini = min(d1,d2);
+    //mini = min(d1,d2);
     if( d1 <= d2)
       tup = t2;
     else
       tdown = t1;
   }
-  return mini;
+  return diff((t1+t2)*0.5);
 }
 
 int main(){
-  //ios_base::sync_with_stdio(false); cin.tie(NULL
+  ios_base::sync_with_stdio(false);cin.tie(NULL);
   ld t,v, ans;
   while(cin>>N && N!=0){
     //cout<<N<<endl;
