@@ -23,18 +23,18 @@ ld diff(ld t){
 
 ld solver(){
   tup = 1e8 + tdown;
-  ld t1, t2, d1, d2, mini;
+  ld t1, t2, d1, d2;
   int step = int(tdown); //se empieza desde que sale el último cheetah
   int maxiter = 1e8 + tdown; //máximas iteraciones
   for(; step < maxiter; step++){
     t1 = (2.0*tdown + tup)/3.0;
     t2 = (tdown + 2.0*tup)/3.0;
-    if(!(t1 <= t2 + EPS && t1 + EPS < t2)) break;
+    //if(!(t1 <= t2 + EPS && t1 + EPS < t2)) break;
+    if( t2 - t1 <= EPS) break;
     d1 = diff(t1);
     d2 = diff(t2);
     //cout<<"d1: "<<d1<< "d2: " <<d2 << endl << " t1: " << t1 << " t2: " << t2 <<endl;
     //cout << "step : " << step << endl;
-    //mini = min(d1,d2);
     if( d1 <= d2)
       tup = t2;
     else
